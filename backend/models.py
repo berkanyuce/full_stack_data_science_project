@@ -1,16 +1,18 @@
-from pydantic import BaseModel
-from sqlalchemy import Column, Integer, String
-from database import Base
+import datetime as _dt
 
-class User(BaseModel):
-    username: str
-    email: str
-    password: str
+import sqlalchemy as _sql
+import sqlalchemy.orm as _orm
+import passlib.hash as _hash
 
-class UserDB(Base):
-    __tablename__ = "user"
+import database as _database
 
-    id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, unique=True, index=True)
-    email = Column(String, unique=True, index=True)
-    password = Column(String)
+
+class User(_database.Base):
+    __tablename__ = "users"
+    id = _sql.Column(_sql.Integer, primary_key=True, index=True)
+    email = _sql.Column(_sql.String, unique=True, index=True)
+    hashed_password = _sql.Column(_sql.String)
+
+
+    def verify_password(self, password: str):
+        return _hash.bcrypt.verify(password, self.hashed_password)

@@ -1,37 +1,63 @@
-from fastapi import FastAPI, HTTPException, Depends
-from sqlalchemy.orm import Session
-from database import SessionLocal, engine
-from models import User, UserDB, Base
-from pydantic import BaseModel
+from typing import List
+import fastapi as _fastapi
+import fastapi.security as _security
+import sqlalchemy.orm as _orm
+from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI()
+import services as _services
+import schemas as _schemas
 
-# Dependency to get the database session
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+app = _fastapi.FastAPI()
 
-# Create tables if they don't exist
-Base.metadata.create_all(bind=engine)
+# Configure CORS
+origins = [
+    "http://localhost:3000",
+]
 
-@app.post("/register/")
-async def register_user(user: User, db: Session = Depends(get_db)):
-    db_user = UserDB(username=user.username, email=user.email, password=user.password)
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
-    return {"message": "User registered successfully"}
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-class LoginRequest(BaseModel):
-    username: str
-    password: str
+@app.post("/api/users")
+async def create_user(
+    user: _schemas.UserCreate, db: _orm.Session = _fastapi.Depends(_services.get_db)
+):
+    db_user = await _services.get_user_by_email(user.email, db)
+    if db_user:
+        raise _fastapi.HTTPException(status_code=400, detail="Email already in use")
 
-@app.post("/login/")
-async def login(login_request: LoginRequest, db: Session = Depends(get_db)):
-    user = db.query(UserDB).filter(UserDB.username == login_request.username).first()
-    if not user or user.password != login_request.password:
-        raise HTTPException(status_code=401, detail="Invalid username or password")
-    return {"message": "Login successful"}
+    user = await _services.create_user(user, db)
+
+    return await _services.create_token(user)
+
+
+@app.post("/api/token")
+async def generate_token(
+    form_data: _security.OAuth2PasswordRequestForm = _fastapi.Depends(),
+    db: _orm.Session = _fastapi.Depends(_services.get_db),
+):
+    user = await _services.authenticate_user(form_data.username, form_data.password, db)
+
+    if not user:
+        raise _fastapi.HTTPException(status_code=401, detail="Invalid Credentials")
+
+    return await _services.create_token(user)
+
+
+@app.get("/api/users/me", response_model=_schemas.User)
+async def get_user(user: _schemas.User = _fastapi.Depends(_services.get_current_user)):
+    return user
+
+
+@app.get("/api")
+async def root():
+    return {"message": "Full Stack Data Science Project"}
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
