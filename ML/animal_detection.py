@@ -1,7 +1,8 @@
+
 from roboflow import Roboflow
-rf = Roboflow(api_key="***") # API is hidden
+rf = Roboflow(api_key="IDb2X2qwfoHmjEljfIOb")
 project = rf.workspace().project("classificationbee-cat-dog-monkey-yn7fw")
-model = project.version(1).model
+model = project.version(3).model
 
 # infer on a local image
-print(model.predict("/Users/berkanyuce/Desktop/monkey.jpg", confidence=40, overlap=30).json())
+print(model.predict("/Users/berkanyuce/Desktop/cat.jpg", confidence=40, overlap=30).json())
