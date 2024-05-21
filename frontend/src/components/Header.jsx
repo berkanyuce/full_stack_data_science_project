@@ -10,14 +10,18 @@ const Header = ({ title }) => {
   };
 
   return (
-    <div className="has-text-centered m-6">
-      <h1 className="title">{title}</h1>
+    <div className="text-center m-6">
+      <h1 className="text-2xl font-bold mb-4">{title}</h1>
       {token && (
-        <button className="button" onClick={handleLogout}>
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+          onClick={handleLogout}
+        >
           Logout
         </button>
       )}
     </div>
+
   );
 };
 

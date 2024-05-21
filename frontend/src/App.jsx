@@ -34,19 +34,21 @@ const App = () => {
   return (
     <>
       <Header title={message} />
-      <div className="columns">
-        <div className="column"></div>
-        <div className="column m-5 is-two-thirds">
+      <div className="flex flex-col md:flex-row">
+        <div className="flex-1"></div>
+        <div className="flex-1 md:flex-2/3 p-5">
           {!token ? (
-            <div className="columns">
-              <Register /> <Login />
+            <div className="flex flex-col md:flex-row">
+              <Register />
+              <Login />
             </div>
           ) : (
             <Home />
           )}
         </div>
-        <div className="column"></div>
+        <div className="flex-1"></div>
       </div>
+
     </>
   );
 };

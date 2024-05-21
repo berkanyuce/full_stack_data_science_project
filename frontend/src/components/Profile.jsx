@@ -32,17 +32,17 @@ const Profile = () => {
       }, [token]);
 
     return (
-        <div>
-        <h2>Profil Sayfası</h2>
-        {email ? (
-            <div>
-            <p>E-posta: {email}</p>
-            {/* Diğer kullanıcı bilgileri burada görüntülenebilir */}
-            </div>
-        ) : (
-            <p>{errorMessage || "Kullanıcı bilgileri yükleniyor..."}</p>
-        )}
+        <div className="container mx-auto p-4">
+            <h2 className="text-2xl font-bold mb-4">Profil Sayfası</h2>
+            {email ? (
+                <div className="bg-white shadow-md rounded-lg p-6">
+                <p className="text-lg">E-posta: {email}</p>
+                </div>
+            ) : (
+                <p className="text-red-500">{errorMessage || "Loading..."}</p>
+            )}
         </div>
+
     );
 };
 

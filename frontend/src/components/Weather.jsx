@@ -21,9 +21,9 @@ const Weather = () => {
   }, []);
 
   return (
-    <div>
-      <h1 className="title">Weather Analysis</h1>
-      {image && <img src={`data:image/png;base64,${image}`} alt="Weather Analysis" />}
+    <div className="p-4">
+        <h1 className="text-3xl font-bold mb-4">Weather Analysis</h1>
+        {image && <img src={`data:image/png;base64,${image}`} alt="Weather Analysis" className="w-full h-auto rounded-lg shadow-md" />}
     </div>
   );
 };
