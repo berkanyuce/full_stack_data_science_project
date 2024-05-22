@@ -5,4 +5,4 @@ project = rf.workspace().project("classificationbee-cat-dog-monkey-yn7fw")
 model = project.version(3).model
 
 # infer on a local image
-print(model.predict("/Users/berkanyuce/Desktop/cat.jpg", confidence=40, overlap=30).json())
+print(model.predict("/cat.jpg", confidence=40, overlap=30).json())

@@ -7,7 +7,7 @@ import io
 import base64
 
 # Power verisini oku
-power = pd.read_csv('/Users/berkanyuce/Desktop/Workintech/Kişisel Projeler/interview1/ML/power_usage_2016_to_2020.csv')
+power = pd.read_csv("power_usage_2016_to_2020.csv")
 
 # Verinin boyutunu al
 n = power.shape[0]
@@ -26,7 +26,7 @@ daily_power = power.resample('D').sum()
 daily_power.index.name = 'Date'
 
 # Weather verisini oku
-weather = pd.read_csv('/Users/berkanyuce/Desktop/Workintech/Kişisel Projeler/interview1/ML/weather_2016_2020_daily.csv')
+weather = pd.read_csv('weather_2016_2020_daily.csv')
 
 # Weather verisinin boyutunu al
 m = weather.shape[0]
