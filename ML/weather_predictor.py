@@ -3,8 +3,7 @@ import pandas as pd
 import statsmodels.api as sm
 import seaborn as sns
 import matplotlib.pyplot as plt
-import io
-import base64
+import pickle
 
 # Power verisini oku
 power = pd.read_csv("power_usage_2016_to_2020.csv")
@@ -108,10 +107,18 @@ def backward_elimination(Y, X):
         p_values = model.pvalues
     return model
 
-# Build the model and check p-values (for HDD)
+# Build the model and save with pickle
 model = backward_elimination(Y, X)
 
-
+# Save model to pickle
+with open('model.pkl', 'wb') as f:
+    pickle.dump(model, f)
+    
+# Verileri pickle dosyasına kaydet
+with open('processed_data.pkl', 'wb') as f:
+    pickle.dump(weather, f)
+    
+    
 # Print the results
 print("Model Summary:")
 print(model.summary())
@@ -123,14 +130,15 @@ predicted_values = model.predict()
 
 # Get actual values
 actual_values = Y.values
+actual_values = actual_values.reshape(1498,)
+
 
 # Draw a graph showing the relationship between predicted and actual values
 plt.figure(figsize=(10, 6))
-plt.scatter(actual_values, predicted_values, color='blue', alpha=0.5)
-plt.plot(actual_values, actual_values, color='red', linestyle='--')
-plt.title('Gerçek vs. Tahmin Edilen  Değerleri')
-plt.xlabel('Gerçek  Değerleri')
-plt.ylabel('Tahmin Edilen CDD Değerleri')
+plt.scatter(actual_values, predicted_values, color='blue')
+plt.plot(actual_values, actual_values, color='red')  # 45 derecelik bir açıda doğru çizgisi
+plt.title('Gerçek Değerler vs Tahmin Edilen Değerler')
+plt.xlabel('Gerçek Değerler')
+plt.ylabel('Tahmin Edilen Değerler')
 plt.grid(True)
 plt.show()
-
